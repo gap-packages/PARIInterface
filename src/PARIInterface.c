@@ -515,8 +515,8 @@ static Obj FuncPARI_FUNC_WRAP(Obj self, Obj name, Obj args)
         ErrorQuit("cannot handle functions with %i arguments", narg, 0L);
         break;
     }
-    func = NewFunctionT(T_FUNCTION, sizeof(FuncBag) + sizeof(void *), name,
-                        narg, args, PARI_FUNC_HANDLER2);
+    func = NewFunctionT(T_FUNCTION, sizeof(PariFuncBag), name,
+                        narg, args, handler);
 
     PARI_FUNC(func)->symbol = dlsym(RTLD_LOCAL, CHARS_STRING(name));
 
