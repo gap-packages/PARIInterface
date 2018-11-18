@@ -2,6 +2,8 @@
  * PARIInterface: Interface to PARI
  */
 
+#define _GNU_SOURCE   // to get RTLD_DEFAULT on Linux
+
 #include <pari/pari.h>
 #include "src/compiled.h"          /* GAP headers */
 
@@ -248,7 +250,7 @@ static GEN ObjToPariGEN(Obj obj)
     if (IS_INT(obj))
         return IntToPariGEN(obj);
     else
-        ErrorQuit("ObjToPariGEN: not a supported type: %s", TNAM_OBJ(obj), 0L);
+        ErrorQuit("ObjToPariGEN: not a supported type: %s", (Int)TNAM_OBJ(obj), 0L);
 }
 
 
@@ -338,6 +340,7 @@ Obj FuncPARI_INIT(Obj self, Obj stack, Obj primes)
 Obj FuncPARI_CLOSE(Obj self)
 {
     pari_close();
+    return 0;
 }
 
 /* These are good examples of the pattern
@@ -361,7 +364,7 @@ static Obj FuncPARI_gcdii(Obj self, Obj x, Obj y)
 static Obj FuncPARI_CALL0(Obj self, Obj name)
 {
     GEN (*func)() = 0;
-    func = dlsym(RTLD_LOCAL, CHARS_STRING(name));
+    func = dlsym(RTLD_DEFAULT, CONST_CSTR_STRING(name));
     if(!func)
         ErrorQuit("function not found", 0L, 0L);
     return NewPARIGEN((*func)());
@@ -371,7 +374,7 @@ static Obj FuncPARI_CALL1(Obj self, Obj name, Obj a1)
 {
     GEN (*func)(GEN) = 0;
     GEN g1 = PARI_DAT_GEN(a1);
-    func = dlsym(RTLD_LOCAL, CHARS_STRING(name));
+    func = dlsym(RTLD_DEFAULT, CONST_CSTR_STRING(name));
     if(!func)
         ErrorQuit("function not found", 0L, 0L);
     return NewPARIGEN((*func)(g1));
@@ -382,7 +385,7 @@ static Obj FuncPARI_CALL2(Obj self, Obj name, Obj a1, Obj a2)
     GEN (*func)(GEN,GEN) = 0;
     GEN g1 = PARI_DAT_GEN(a1);
     GEN g2 = PARI_DAT_GEN(a2);
-    func = dlsym(RTLD_LOCAL, CHARS_STRING(name));
+    func = dlsym(RTLD_DEFAULT, CONST_CSTR_STRING(name));
     if(!func)
        ErrorQuit("function not found", 0L, 0L);
     return NewPARIGEN((*func)(g1,g2));
@@ -394,7 +397,7 @@ static Obj FuncPARI_CALL3(Obj self, Obj name, Obj a1, Obj a2, Obj a3)
     GEN g1 = PARI_DAT_GEN(a1);
     GEN g2 = PARI_DAT_GEN(a2);
     GEN g3 = PARI_DAT_GEN(a3);
-    func = dlsym(RTLD_LOCAL, CHARS_STRING(name));
+    func = dlsym(RTLD_DEFAULT, CONST_CSTR_STRING(name));
     if(!func)
         ErrorQuit("function not found", 0L, 0L);
     return NewPARIGEN((*func)(g1,g2,g3));
@@ -407,7 +410,7 @@ static Obj FuncPARI_CALL4(Obj self, Obj name, Obj a1, Obj a2, Obj a3, Obj a4)
     GEN g2 = PARI_DAT_GEN(a2);
     GEN g3 = PARI_DAT_GEN(a3);
     GEN g4 = PARI_DAT_GEN(a4);
-    func = dlsym(RTLD_LOCAL, CHARS_STRING(name));
+    func = dlsym(RTLD_DEFAULT, CONST_CSTR_STRING(name));
     if(!func)
         ErrorQuit("function not found", 0L, 0L);
     return NewPARIGEN((*func)(g1,g2,g3,g4));
@@ -421,7 +424,7 @@ static Obj FuncPARI_CALL5(Obj self, Obj name, Obj a1, Obj a2, Obj a3, Obj a4, Ob
     GEN g3 = PARI_DAT_GEN(a3);
     GEN g4 = PARI_DAT_GEN(a4);
     GEN g5 = PARI_DAT_GEN(a5);
-    func = dlsym(RTLD_LOCAL, CHARS_STRING(name));
+    func = dlsym(RTLD_DEFAULT, CONST_CSTR_STRING(name));
     if(!func)
         ErrorQuit("function not found", 0L, 0L);
     return NewPARIGEN((*func)(g1,g2,g3,g4,g5));
@@ -522,7 +525,7 @@ static Obj FuncPARI_FUNC_WRAP(Obj self, Obj name, Obj args)
     func = NewFunctionT(T_FUNCTION, sizeof(FuncBag) + sizeof(void *), name,
                         narg, args, PARI_FUNC_HANDLER2);
 
-    PARI_FUNC(func)->symbol = dlsym(RTLD_LOCAL, CHARS_STRING(name));
+    PARI_FUNC(func)->symbol = dlsym(RTLD_DEFAULT, CONST_CSTR_STRING(name));
 
     return func;
 }
