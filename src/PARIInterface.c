@@ -111,7 +111,7 @@ static Obj PariIntToIntObj(GEN v)
         ErrorQuit("v has to be a PARI t_INT", 0L, 0L);
 
     size = signe(v) * (lgefint (v) - 2);
-    return MakeObjInt(int_LSW(v), size);
+    return MakeObjInt((const UInt *)int_LSW(v), size);
 }
 
 static Obj PariFracToRatObj(GEN v)
