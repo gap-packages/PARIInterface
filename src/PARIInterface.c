@@ -116,11 +116,15 @@ static Obj PariIntToIntObj(GEN v)
 
 static Obj PariFracToRatObj(GEN v)
 {
-    Obj res;
+    Obj num = PariGENToObj(gel(v, 1));
+    Obj den = PariGENToObj(gel(v, 2));
 
-    res = NewBag(T_RAT, 2 * sizeof(Obj));
-    SET_NUM_RAT(res, PariGENToObj(gel(v, 1)));
-    SET_DEN_RAT(res, PariGENToObj(gel(v, 2)));
+    if (den == INTOBJ_INT(1))
+        return num;
+
+    Obj res = NewBag(T_RAT, 2 * sizeof(Obj));
+    SET_NUM_RAT(res, num);
+    SET_DEN_RAT(res, den);
 
     return res;
 }
