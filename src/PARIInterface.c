@@ -645,8 +645,7 @@ static Obj FuncPARI_FUNC_WRAP(Obj self, Obj name, Obj args)
         ErrorQuit("cannot handle functions with %i arguments", narg, 0L);
         break;
     }
-    func = NewFunctionT(T_FUNCTION, sizeof(FuncBag), name, narg,
-                        args, handler);
+    func = NewFunction(name, narg, args, handler);
 
     SET_FEXS_FUNC(func, dlsym(0L, CONST_CSTR_STRING(name)));
     return func;
