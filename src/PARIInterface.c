@@ -469,6 +469,7 @@ Obj FuncPARI_INIT(Obj self, Obj stack, Obj stackmax)
 Obj FuncPARI_CLOSE(Obj self)
 {
     pari_close();
+    return 0;
 }
 
 /* These are good examples of the pattern
