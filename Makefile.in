@@ -118,7 +118,7 @@ Makefile: configure Makefile.in
 ########################################################################
 ifeq ($(BUILD_PARI),yes)
 PARI_PREFIX := extern/install
-PARI_FILES := $(PARI_PREFIX)/lib/libpari.so
+PARI_FILES := $(PARI_PREFIX)/lib/libpari.*
 PARI_CPPFLAGS = -I $(PARI_PREFIX)/include
 PARI_LDFLAGS = -R $(TOP)/$(PARI_PREFIX)/lib -L$(PARI_PREFIX)/lib -lpari
 
