@@ -2,10 +2,13 @@
  * PARIInterface: Interface to PARI
  */
 
+#define _GNU_SOURCE     // for RTLD_DEFAULT on Linux
+
 #include <pari/pari.h>
 #include "src/compiled.h"          /* GAP headers */
 
 #include <gmp.h>                   /* mp_limb_t :/ */
+
 #include <dlfcn.h>
 
 #define PARI_T_GEN 0          // Generic PARI object
@@ -489,72 +492,65 @@ static Obj FuncPARI_gcdii(Obj self, Obj x, Obj y)
     return NewPARIGEN(gcdii(x_, y_));
 }
 
+typedef GEN (* GENFunc) (/*arguments*/);
+
+static GENFunc GetPARIFunc(Obj name)
+{
+    GENFunc func = dlsym(RTLD_DEFAULT, CONST_CSTR_STRING(name));
+    if (!func)
+        ErrorQuit("function not found: %s", (Int)dlerror(), 0);
+    return func;
+}
+
+
 static Obj FuncPARI_CALL0(Obj self, Obj name)
 {
-    GEN (*func)() = 0;
-    func = dlsym(0L, CONST_CSTR_STRING(name));
-    if(!func)
-        ErrorQuit("function not found", 0L, 0L);
+    GENFunc func = GetPARIFunc(name);
     return NewPARIGEN((*func)());
 }
 
 static Obj FuncPARI_CALL1(Obj self, Obj name, Obj a1)
 {
-    GEN (*func)(GEN) = 0;
+    GENFunc func = GetPARIFunc(name);
     GEN g1 = PARI_DAT_GEN(a1);
-    func = dlsym(0L, CONST_CSTR_STRING(name));
-    if(!func)
-        ErrorQuit("function not found", 0L, 0L);
     return NewPARIGEN((*func)(g1));
 }
 
 static Obj FuncPARI_CALL2(Obj self, Obj name, Obj a1, Obj a2)
 {
-    GEN (*func)(GEN,GEN) = 0;
+    GENFunc func = GetPARIFunc(name);
     GEN g1 = PARI_DAT_GEN(a1);
     GEN g2 = PARI_DAT_GEN(a2);
-    func = dlsym(0L, CONST_CSTR_STRING(name));
-    if(!func)
-       ErrorQuit("function not found", 0L, 0L);
     return NewPARIGEN((*func)(g1,g2));
 }
 
 static Obj FuncPARI_CALL3(Obj self, Obj name, Obj a1, Obj a2, Obj a3)
 {
-    GEN (*func)(GEN,GEN,GEN) = 0;
+    GENFunc func = GetPARIFunc(name);
     GEN g1 = PARI_DAT_GEN(a1);
     GEN g2 = PARI_DAT_GEN(a2);
     GEN g3 = PARI_DAT_GEN(a3);
-    func = dlsym(0L, CONST_CSTR_STRING(name));
-    if(!func)
-        ErrorQuit("function not found", 0L, 0L);
     return NewPARIGEN((*func)(g1,g2,g3));
 }
 
 static Obj FuncPARI_CALL4(Obj self, Obj name, Obj a1, Obj a2, Obj a3, Obj a4)
 {
-    GEN (*func)(GEN,GEN,GEN,GEN) = 0;
+    GENFunc func = GetPARIFunc(name);
     GEN g1 = PARI_DAT_GEN(a1);
     GEN g2 = PARI_DAT_GEN(a2);
     GEN g3 = PARI_DAT_GEN(a3);
     GEN g4 = PARI_DAT_GEN(a4);
-    func = dlsym(0L, CONST_CSTR_STRING(name));
-    if(!func)
-        ErrorQuit("function not found", 0L, 0L);
     return NewPARIGEN((*func)(g1,g2,g3,g4));
 }
 
 static Obj FuncPARI_CALL5(Obj self, Obj name, Obj a1, Obj a2, Obj a3, Obj a4, Obj a5)
 {
-    GEN (*func)(GEN,GEN,GEN,GEN,GEN) = 0;
+    GENFunc func = GetPARIFunc(name);
     GEN g1 = PARI_DAT_GEN(a1);
     GEN g2 = PARI_DAT_GEN(a2);
     GEN g3 = PARI_DAT_GEN(a3);
     GEN g4 = PARI_DAT_GEN(a4);
     GEN g5 = PARI_DAT_GEN(a5);
-    func = dlsym(0L, CONST_CSTR_STRING(name));
-    if(!func)
-        ErrorQuit("function not found", 0L, 0L);
     return NewPARIGEN((*func)(g1,g2,g3,g4,g5));
 }
 
@@ -618,7 +614,8 @@ static Obj FuncPARI_FUNC_WRAP(Obj self, Obj name, Obj args)
 {
     Obj func;
     Int narg;
-    Obj (*handler)();
+    ObjFunc handler;
+    GENFunc pariFunc = GetPARIFunc(name);
 
     narg = LEN_LIST(args);
 
@@ -648,7 +645,7 @@ static Obj FuncPARI_FUNC_WRAP(Obj self, Obj name, Obj args)
     func = NewFunctionT(T_FUNCTION, sizeof(FuncBag), name, narg,
                         args, handler);
 
-    SET_FEXS_FUNC(func, dlsym(0L, CONST_CSTR_STRING(name)));
+    SET_FEXS_FUNC(func, (Obj)pariFunc);
     return func;
 }
 
