@@ -10,6 +10,7 @@ _PARIINTERFACE_STACKMAX_DEFAULT := 1024 * 1024 *1024;
 
 
 #! @Chapter PARIInterface
+#! @Section Basics
 #!
 #! A C interface to the PARI number theory library
 DeclareCategory( "IsPARIObj",  IsObject );
