@@ -8,10 +8,10 @@ The PARIInterface package aims at providing bindings to the PARI number theory s
 ## Documentation
 
 Full information and documentation can be found in the manual, available
-as PDF `doc/manual.pdf` or as HTML `htm/chapters.htm`, or on the package
+as PDF `doc/manual.pdf` or as HTML `doc/chap0.html`, or on the package
 homepage at
 
-  <http://gap-packages.github.io/PARIInterface/>
+  <https://gap-packages.github.io/PARIInterface/>
 
 
 ## Bug reports and feature requests
