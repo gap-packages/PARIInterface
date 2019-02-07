@@ -555,9 +555,16 @@ static Obj FuncPARI_CALL5(Obj self, Obj name, Obj a1, Obj a2, Obj a3, Obj a4, Ob
     return NewPARIGEN((*func)(g1,g2,g3,g4,g5));
 }
 
+// To wrap PARI function we use modified T_FUNCTION bags with one extra
+// value in them, which points to the PARI function being wrapped.
+typedef struct {
+    FuncBag f;
+    void * pariFunc;
+} PARIFuncBag;
+
 static inline void * PARI_FUNC(Obj func)
 {
-    return (void *)FEXS_FUNC(func);
+    return ((const PARIFuncBag *)CONST_ADDR_OBJ(func))->pariFunc;
 }
 
 static Obj PARI_FUNC_HANDLER0(Obj self)
@@ -643,10 +650,10 @@ static Obj FuncPARI_FUNC_WRAP(Obj self, Obj name, Obj args)
         ErrorQuit("cannot handle functions with %i arguments", narg, 0L);
         break;
     }
-    func = NewFunctionT(T_FUNCTION, sizeof(FuncBag), name, narg,
+    func = NewFunctionT(T_FUNCTION, sizeof(PARIFuncBag), name, narg,
                         args, handler);
 
-    SET_FEXS_FUNC(func, (Obj)pariFunc);
+    ((PARIFuncBag *)ADDR_OBJ(func))->pariFunc = pariFunc;
     return func;
 }
 
