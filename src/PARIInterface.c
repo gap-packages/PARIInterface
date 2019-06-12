@@ -284,7 +284,7 @@ static GEN IntToPariGEN(Obj o)
     if (IS_INTOBJ(o)) {
         // Immediate integers can be converted using
         // stoi
-        r = stoi(UInt_ObjInt(o));
+        r = stoi(Int_ObjInt(o));
     } else { // Large integer
         size = SIZE_INT(o);
         sign = IS_POS_INT(o) ? 1 : -1;
@@ -312,7 +312,7 @@ static GEN CoeffListToPariGEN(Obj poly)
         v = cgetg(3 + deg, t_POL);
         for(UInt i = 2; i < 2 + len; i++) {
             Obj elt = ELM_LIST(poly, i - 1);
-            gel(v, i) = stoi(Int_ObjInt(elt));
+            gel(v, i) = IntToPariGEN(elt);
         }
     }
     v[1] = evalsigne(0);
