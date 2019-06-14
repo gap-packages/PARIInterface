@@ -210,8 +210,6 @@ static Obj PariGENToObj(GEN v)
 //
 // Converts a GAP Obj to a PARI GEN (if possible)
 //
-static GEN ObjToPariGEN(Obj obj);
-static GEN ListToPariVec(Obj list);
 
 static GEN Perm2ToPariGEN(Obj perm)
 {
