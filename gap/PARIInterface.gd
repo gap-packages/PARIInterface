@@ -23,3 +23,5 @@ DeclareGlobalFunction( "PARIInitialise" );
 DeclareGlobalFunction( "PARIClose" );
 DeclareGlobalFunction( "PARIPolynomial" );
 DeclareGlobalFunction( "PARIGaloisGroup" );
+DeclareGlobalFunction( "PARIGetAvma" );
+DeclareGlobalFunction( "PARISetAvma" );

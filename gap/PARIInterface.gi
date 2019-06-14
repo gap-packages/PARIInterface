@@ -52,3 +52,13 @@ InstallMethod( ViewObj, "for a PARI DatObj",
 function(o)
     Print("PARI(",PARI_GEN_TO_STR(o),")");
 end);
+
+InstallGlobalFunction( PARIGetAvma,
+function()
+   return PARI_AVMA();
+end );
+
+InstallGlobalFunction( PARISetAvma,
+function(av)
+   PARI_SET_AVMA(av);
+end );

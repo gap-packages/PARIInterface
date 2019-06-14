@@ -668,6 +668,15 @@ static Obj FuncPARI_FUNC_WRAP(Obj self, Obj name, Obj args)
     return func;
 }
 
+static Obj FuncPARI_AVMA(Obj self)
+{
+  return PariIntToIntObj(utoi(avma));
+}
+static void FuncPARI_SET_AVMA(Obj self, Obj av)
+{
+  avma = itou(IntToPariGEN(av));
+}
+
 static Obj FuncPARI_GEN_TO_OBJ(Obj self, Obj x)
 {
   return PariGENToObj(PARI_DAT_GEN(x));
@@ -700,6 +709,8 @@ static StructGVarFunc GVarFuncs [] = {
     GVAR_FUNC(PARI_CALL4, 5, "name, a1, a2, a3, a4"),
     GVAR_FUNC(PARI_CALL5, 6, "name, a1, a2, a3, a4, a5"),
     GVAR_FUNC(PARI_FUNC_WRAP, 2, "name, nargs"),
+    GVAR_FUNC(PARI_AVMA, 0, ""),
+    GVAR_FUNC(PARI_SET_AVMA, 1, "av"),
     { 0 } /* Finish with an empty entry */
 };
 
