@@ -501,6 +501,19 @@ static GENFunc GetPARIFunc(Obj name)
     return func;
 }
 
+static Obj FuncPARI_VEC_TO_LIST(Obj self, Obj x)
+{
+    GEN v = PARI_DAT_GEN(x);
+    Int len = lg(v);
+    Obj res = NEW_PLIST(T_PLIST, len - 1);
+    SET_LEN_PLIST(res, len - 1);
+
+    for(Int i = 1; i < len; i++) {
+        SET_ELM_PLIST(res, i, NewPARIGEN(gel(v, i)));
+        CHANGED_BAG(res);
+    }
+    return res;
+}
 
 static Obj FuncPARI_CALL0(Obj self, Obj name)
 {
@@ -673,6 +686,7 @@ static StructGVarFunc GVarFuncs [] = {
     GVAR_FUNC(PARI_GEN_GET_DATA, 1, "o"),
     GVAR_FUNC(INT_TO_PARI_GEN, 1, "i"),
     GVAR_FUNC(PARI_GEN_TO_STR, 1, "o"),
+    GVAR_FUNC(PARI_VEC_TO_LIST, 1, "o"),
     GVAR_FUNC(PARI_CALL0, 1, "name"),
     GVAR_FUNC(PARI_CALL1, 2, "name, a1"),
     GVAR_FUNC(PARI_CALL2, 3, "name, a1, a2"),
