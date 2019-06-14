@@ -668,6 +668,11 @@ static Obj FuncPARI_FUNC_WRAP(Obj self, Obj name, Obj args)
     return func;
 }
 
+static Obj FuncPARI_GEN_TO_OBJ(Obj self, Obj x)
+{
+  return PariGENToObj(PARI_DAT_GEN(x));
+}
+
 // Table of functions to export
 static StructGVarFunc GVarFuncs [] = {
     GVAR_FUNC(PARI_INIT, 2, "stack, stackmax"),
@@ -684,6 +689,7 @@ static StructGVarFunc GVarFuncs [] = {
     GVAR_FUNC(PARI_FACTOR_INT, 1, "x"),
     GVAR_FUNC(PARI_GEN_GET_TYPE, 1, "o"),
     GVAR_FUNC(PARI_GEN_GET_DATA, 1, "o"),
+    GVAR_FUNC(PARI_GEN_TO_OBJ, 1, "o"),
     GVAR_FUNC(INT_TO_PARI_GEN, 1, "i"),
     GVAR_FUNC(PARI_GEN_TO_STR, 1, "o"),
     GVAR_FUNC(PARI_VEC_TO_LIST, 1, "o"),
