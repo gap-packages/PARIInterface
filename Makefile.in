@@ -133,7 +133,7 @@ EXTERN_FILES += $(PARI_FILES)
 #
 pari: $(PARI_FILES)
 $(PARI_FILES):
-	scripts/build_pari.sh $(GAPPATH)
+	etc/build_pari.sh $(GAPPATH)
 
 pariclean:
 	rm -rf $(PARI_PREFIX)
