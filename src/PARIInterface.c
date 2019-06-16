@@ -1,5 +1,13 @@
 /*
  * PARIInterface: Interface to PARI
+ *
+ *
+ *  Copyright (C) 2018-2019
+ *    Bill Allombert <bill.allombert@math.u-bordeaux.fr>
+ *    Vincent Delecroix <vincent.delecroix@math.cnrs.fr>
+ *    Markus Pfeiffer <markus.pfeiffer@morphism.de>
+ *
+ * Licensed under the GPL 2 or later.
  */
 
 #define _GNU_SOURCE     // for RTLD_DEFAULT on Linux
@@ -19,12 +27,10 @@
 #define PARI_DAT_GEN(obj)          ((GEN)(CONST_ADDR_OBJ(obj)[2]))
 #define SET_PARI_DAT_GEN(obj, g)   (ADDR_OBJ(obj)[2] = (Obj)(g))
 
-
+static Obj IsPARIObj;
 static Obj PARI_GEN_Type;    // Imported from GAP
 static Obj PARI_GEN_REFLIST; // list of references to PARI Objects
                              // that are still used by GAP
-
-
 // Conversions from PARI GEN to corresponding GAP Obj
 static Obj PariGENToObj(GEN v);
 static Obj PariVecToList(GEN v);
@@ -35,6 +41,14 @@ static Obj PariVecToList(GEN v);
 static GEN ObjToPariGEN(Obj obj);
 static GEN ListToPariVec(Obj list);
 static GEN IntToPariGEN(Obj o);
+
+#define RequirePARIObj(funcname, op)                                             \
+    RequireArgumentCondition(funcname, op, IS_PARI_OBJ(op), "must be a PARI object")
+
+int IS_PARI_OBJ(Obj o)
+{
+    return CALL_1ARGS(IsPARIObj, o) == True;
+}
 
 // This is a bag that wraps a PARI value, in case we want to hold on to
 // it GAP-side.
@@ -175,18 +189,18 @@ static Obj PariGENToObj(GEN v)
 {
     Obj res;
     switch (typ(v)) {
-    case t_INT:    // Integer
+    case t_INT:       // Integer
         return PariIntToIntObj(v);
-    case t_COL:    // Column Vector
-    case t_VEC:    // Row Vector
+    case t_COL:       // Column Vector
+    case t_VEC:       // Row Vector
         return PariVecToList(v);
-    case t_VECSMALL:    // Vector of small integers
+    case t_VECSMALL:  // Vector of small integers
         return PariVecSmallToList(v);
-    case t_STR:    // String
+    case t_STR:       // String
         return MakeString(GSTR(v));
     case t_INTMOD:    // Int mod Modulus
         return PariVecToList(v);
-    case t_FRAC:    // Fraction
+    case t_FRAC:      // Fraction
         return PariFracToRatObj(v);
     case t_POLMOD:    // Polynomial mod modulus
         return PariVecToList(v);
@@ -197,8 +211,8 @@ static Obj PariGENToObj(GEN v)
     case t_FFELT:     // Finite field element
     case t_SER:       // Power series
     case t_RFRAC:     // Rational function
-    case t_PADIC:    // p-adic numbers
-    case t_QUAD:     // quadratic numbers
+    case t_PADIC:     // p-adic numbers
+    case t_QUAD:      // quadratic numbers
     default:
         // TODO: Find names for the types
         ErrorQuit("PariGENToObj: not a supported type %i", typ(v), 0L);
@@ -352,27 +366,24 @@ Obj FuncPARI_GEN_TO_STR(Obj self, Obj o)
 Obj FuncPARI_VECINT(Obj self, Obj list)
 {
     GEN v = ListToPariVec(list);
-    return PariGENToObj(v);
+    return NewPARIGEN(v);
 }
 
 Obj FuncPARI_VECVECSMALL(Obj self, Obj list)
 {
     GEN v = ListToPariVecVecsmall(list);
-
     return NewPARIGEN(v);
 }
 
 Obj FuncPARI_VECVECVECSMALL(Obj self, Obj list)
 {
     GEN v = ListToPariVecVecVecsmall(list);
-
     return NewPARIGEN(v);
 }
 
 Obj FuncPARI_UNIPOLY(Obj self, Obj poly)
 {
     GEN v = CoeffListToPariGEN(poly);
-
     return NewPARIGEN(v);
 }
 
@@ -680,6 +691,7 @@ static void FuncPARI_SET_AVMA(Obj self, Obj av)
 
 static Obj FuncPARI_GEN_TO_OBJ(Obj self, Obj x)
 {
+  RequirePARIObj("GEN_TO_OBJ", x);
   return PariGENToObj(PARI_DAT_GEN(x));
 }
 
@@ -723,6 +735,7 @@ static Int InitKernel( StructInitInfo *module )
     /* init filters and functions                                          */
     InitHdlrFuncsFromTable( GVarFuncs );
 
+    ImportGVarFromLibrary("IsPARIObj", &IsPARIObj);
     ImportGVarFromLibrary("PARI_GEN_Type", &PARI_GEN_Type);
     ImportGVarFromLibrary("PARI_GEN_REFLIST", &PARI_GEN_REFLIST);
 

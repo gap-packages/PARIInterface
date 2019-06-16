@@ -1,8 +1,18 @@
-#
-# PARIInterface: Interface to PARI
-#
-# Implementations
-#
+#############################################################################
+##
+## PARIInterface: Interface to PARI
+##
+##  Copyright 2018-2019
+##    Bill Allombert <bill.allombert@math.u-bordeaux.fr>
+##    Vincent Delecroix <vincent.delecroix@math.cnrs.fr>
+##    Markus Pfeiffer <markus.pfeiffer@morphism.de>
+##
+## Licensed under the GPL 2 or later.
+##
+#############################################################################
+
+# PARIInterface: Interface to PARI library
+
 InstallGlobalFunction( PARIInitialise,
 function(args...)
     local stack, stackmax;

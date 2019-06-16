@@ -21,8 +21,18 @@ Please submit bug reports and feature requests via our GitHub issue tracker:
   <https://github.com/gap-packages/PARIInterface/issues>
 
 
-License
-=======
+## Installing PARIInterface
+
+The PARIInterface package needs a relatively recent version of pari
+header files and libaries. To compile the package just run `make` in
+the PARIInterface repository.
+
+If you happen to have PARI headers and libraries in a non-standard
+repository you can set the variable `PARI_PREFIX` as
+
+    $ make PARI_PREFIX=/path/to/pari/prefix
+
+## License
 
 PARIInterface is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by the
