@@ -670,11 +670,12 @@ static Obj FuncPARI_FUNC_WRAP(Obj self, Obj name, Obj args)
 
 static Obj FuncPARI_AVMA(Obj self)
 {
-  return PariIntToIntObj(utoi(avma));
+  return ObjInt_UInt(avma);
 }
 static void FuncPARI_SET_AVMA(Obj self, Obj av)
 {
-  avma = itou(IntToPariGEN(av));
+  RequireNonnegativeSmallInt("PARI_SET_AVMA", av); 
+  avma = UInt_ObjInt(av);
 }
 
 static Obj FuncPARI_GEN_TO_OBJ(Obj self, Obj x)
