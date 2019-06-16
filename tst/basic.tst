@@ -2,42 +2,28 @@ gap> PARIInitialise();;
 gap> PARI_GEN_TO_OBJ(1);
 Error, GEN_TO_OBJ: <x> must be a PARI object (not the integer 1)
 
-gap> r := PolynomialRing(Integers, 1);;
-gap> p := r.1 ^ 5 + 2;;
-gap> PARIGaloisGroup(p);
-[ 20, -1, 1, "F(5) = 5:4" ]
-
 gap> PARIClose();;
 gap> PARIInitialise(100000,2^24);;
 
-gap> INT_TO_PARI_GEN(4913);
+gap> i := PARI_INT(4913);
 PARI(4913)
-gap> INT_TO_PARI_GEN(3^100);
+gap> PARI_GEN_TO_OBJ(i);
+4913
+gap> i := PARI_INT(3^100);
 PARI(515377520732011331036461129765621272702107522001)
+gap> PARI_GEN_TO_OBJ(i);
+515377520732011331036461129765621272702107522001
+gap> PARI_INT(3/2);
+Error, PARI_INT: <obj> must be an integer (not a rational)
 
-gap> PARI_GEN_ROUNDTRIP((1,3)(2,4,5));
-[ 3, 4, 1, 5, 2 ]
-gap> PARI_GEN_ROUNDTRIP([289, (1,3),(2,4,5)]);
-[ 289, [ 3, 2, 1 ], [ 1, 4, 3, 5, 2 ] ]
-
-gap> PARI_MULT(0,2);
-0
-gap> PARI_MULT(2,0);
-0
-gap> PARI_MULT(2,3);
-6
-gap> PARI_MULT(2^24,3^12);
-8916100448256
-gap> PARI_MULT(2^100,3^200);
-336705732427516898587460627772004697542605295316077247452351004740460372771448563031143507354757009822674618697405379563749376
-
-gap> PARI_FACTOR_INT(24012425);
-[ [ 5, 960497 ], [ 2, 1 ] ]
-gap> PARI_FACTOR_INT(100);
-[ [ 2, 5 ], [ 2, 2 ] ]
-gap> PARI_FACTOR_INT(1204102740127840128401821209348);
-[ [ 2, 3, 163, 7823, 12097, 27719453, 234670785731 ], [ 2, 1, 1, 1, 1, 1, 1 ] 
- ]
+gap> f := PARI_FRAC(2/3);
+PARI(2/3)
+gap> PARI_GEN_TO_OBJ(f);
+2/3
+gap> PARI_FRAC(23);
+PARI(23/1)
+gap> PARI_FRAC(1.23);
+Error, PARI_FRAC: <obj> must be a rational (not a macfloat)
 
 gap> v := PARI_VECINT( [1,2,2^100] );
 PARI([1, 2, 1267650600228229401496703205376])
@@ -59,3 +45,7 @@ gap> PARI_GEN_TO_OBJ(v);
 [ [ [ 1 ], [ 2, 3 ] ], [ [ 4, 5 ] ] ]
 gap> PARI_VECVECVECSMALL( [1] );
 Error, Length: <list> must be a list (not the integer 1)
+
+gap> p := PARI_UNIPOLY([2, 5, 0, 1, 0, 2^100, -3]);
+PARI(-3*x^6 + 1267650600228229401496703205376*x^5 + x^3 + 5*x + 2)
+
