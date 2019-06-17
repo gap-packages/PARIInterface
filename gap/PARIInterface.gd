@@ -49,12 +49,3 @@ DeclareGlobalFunction( "PARISetAvma" );
 #! PARI(x^2-1)
 #! @EndExampleSession
 DeclareGlobalFunction( "PARIPolynomial" );
-
-#! @Arguments p
-#! @Description
-#!   Return the (abstract) Galois group of a polynomial
-#! @BeginExampleSession
-#! gap> PARIGaloisGroup(x^3 - x - 1);
-#! [ 6, -1, 1, "S3" ]
-#! @EndExampleSession
-DeclareGlobalFunction( "PARIGaloisGroup" );

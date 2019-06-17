@@ -8,10 +8,10 @@
 #
 MODULE_NAME = PARIInterface
 
-SOURCES = src/PARIInterface.c
+SOURCES = src/conversions.c src/functions.c src/PARIInterface.c
 
 TOP = $(shell pwd)
-EXTRA_CPPFLAGS =
+EXTRA_CPPFLAGS = -Isrc/
 EXTRA_LDFLAGS =
 EXTERN_FILES =
 

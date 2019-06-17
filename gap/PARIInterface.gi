@@ -50,13 +50,6 @@ function(p)
     return PARI_UNIPOLY(coeffs);
 end );
 
-InstallGlobalFunction( PARIGaloisGroup,
-function(p)
-    local coeffs;
-    coeffs := CoefficientsOfUnivariatePolynomial(p);
-    return PARI_POL_GALOIS_GROUP(coeffs);
-end );
-
 InstallMethod( ViewObj, "for a PARI DatObj",
         [ IsPARIObj ],
 function(o)
