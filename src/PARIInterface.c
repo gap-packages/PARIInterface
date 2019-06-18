@@ -15,8 +15,6 @@
 #include <pari/pari.h>
 #include "src/compiled.h"          /* GAP headers */
 
-#include <gmp.h>                   /* mp_limb_t :/ */
-
 #include <dlfcn.h>
 
 #define PARI_T_GEN 0          // Generic PARI object
@@ -306,7 +304,7 @@ static GEN IntToPariGEN(Obj o)
 
         r = cgeti(size + 2);
         r[1] = evalsigne(sign) | evallgefint(size + 2);
-        memcpy(r+2, ADDR_INT(o), size * sizeof(mp_limb_t));
+        memcpy(r+2, ADDR_INT(o), size * sizeof(GEN));
         GMP_TO_PARI(r+2, lgefint(r)-2)
     }
     return r;
