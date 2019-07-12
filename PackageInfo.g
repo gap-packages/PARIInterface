@@ -12,6 +12,7 @@ PackageName := "PARIInterface",
 Subtitle := "Interface to PARI",
 Version := "0.1",
 Date := "01/02/2018", # dd/mm/yyyy format
+License := "GPL-2.0-or-later",
 
 Persons := [
   rec(
