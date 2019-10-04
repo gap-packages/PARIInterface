@@ -1,117 +1,18 @@
 #
 # Makefile rules for the PARIInterface package
 #
-# This requires GNU make (just as the main GAP does).
-#
-# For simple packages one should only need to modify the MODULE_NAME
-# and the SOURCES variable.
-#
-MODULE_NAME = PARIInterface
-
-SOURCES = src/PARIInterface.c
+KEXT_NAME = PARIInterface
+KEXT_SOURCES = src/PARIInterface.c
 
 TOP = $(shell pwd)
-EXTRA_CPPFLAGS =
-EXTRA_LDFLAGS =
+KEXT_CFLAGS =
+KEXT_LDFLAGS =
 EXTERN_FILES =
 
-########################################################################
-# Do not edit below unless you know what you're doing
-########################################################################
-
-########################################################################
-# Some variables that come from GAP via our configure script
-########################################################################
+# include shared GAP package build system
 GAPPATH = @GAPPATH@
-GAPARCH = @GAPARCH@
+include Makefile.gappkg
 
-BINARCHDIR = bin/@GAPARCH@
-GAPINSTALLIB = $(BINARCHDIR)/$(MODULE_NAME).so
-
-MKDIR_P = /bin/mkdir -p
-
-GAP = @GAPPATH@/gap
-GAC = @GAPPATH@/gac
-
-all: $(GAPINSTALLIB)
-.PHONY: all
-
-########################################################################
-# Object files
-# For each file FOO.c in SOURCES, add gen/FOO.lo to OBJS; similar
-# for .cc files
-########################################################################
-OBJS = $(patsubst %.cc,gen/%.lo,$(patsubst %.c,gen/%.lo,$(SOURCES)))
-
-########################################################################
-# Quiet rules.
-#
-# Replace regular output with quiet messages, unless V is set,
-# e.g. "make V=1"
-########################################################################
-ifneq ($(findstring $(MAKEFLAGS),s),s)
-ifndef V
-QUIET_GAC     = @echo "   GAC     $< => $@";
-LIBTOOL          += --silent
-endif
-endif
-
-########################################################################
-# Rules for automatic header dependency tracking.
-# This is based on the GAP build system.
-########################################################################
-
-# List of all (potential) dependency directories, derived from OBJS
-# and SOURCES (the latter for generated sources, which may also involve
-# dependency tracking)
-DEPDIRS = $(sort $(dir $(SOURCES) $(OBJS)))
-ALL_DEP_FILES = $(wildcard $(addsuffix /*.d,$(DEPDIRS)))
-
-# Include the dependency tracking files.
--include $(ALL_DEP_FILES)
-
-# Mark *.d files as PHONY. This stops make from trying to
-# recreate them (which it can't), and in particular from looking for potential
-# source files. This can save quite a bit of disk access time.
-.PHONY: $(ALL_DEP_FILES)
-
-# The following flags instruct the compiler to enable advanced
-# dependency tracking. Supported by GCC 3 and newer; clang; Intel C
-# compiler; and more.
-DEPFLAGS = -MQ "$@" -MMD -MP -MF $(@D)/$(*F).d
-
-# build rule for C code
-gen/%.lo: %.c
-	@$(QUIET_GAC)$(GAC) -d -p "$(DEPFLAGS)" -p "$(EXTRA_CPPFLAGS)" -c $< -o $@
-
-# build rule for C++ code
-gen/%.lo: %.cc
-	@$(QUIET_GAC)$(GAC) -d -p "$(DEPFLAGS)" -p "$(EXTRA_CPPFLAGS)" -c $< -o $@
-
-# build rule for linking all object files together into a kernel extension
-# TODO: detect pari lib and header files
-$(GAPINSTALLIB): $(OBJS)
-	@$(MKDIR_P) $(BINARCHDIR)
-	@$(QUIET_GAC)$(GAC) -d -p "$(DEPFLAGS)" $(OBJS) -L "$(EXTRA_LDFLAGS)" -o $@
-
-clean:
-	rm -rf $(BINARCHDIR)
-	rm -rf gen
-
-distclean:
-	rm -rf bin gen Makefile
-	(cd doc && ./clean)
-
-doc: default
-	$(GAP) makedoc.g
-
-check: default
-	$(GAP) tst/testall.g
-
-Makefile: configure Makefile.in
-	./configure "@GAPPATH@"
-
-.PHONY: default clean distclean doc check
 
 ########################################################################
 # PARI
@@ -122,8 +23,8 @@ PARI_FILES := $(PARI_PREFIX)/lib/libpari.*
 PARI_CPPFLAGS = -I $(PARI_PREFIX)/include
 PARI_LDFLAGS = -R $(TOP)/$(PARI_PREFIX)/lib -L$(PARI_PREFIX)/lib -lpari
 
-EXTRA_CPPFLAGS += $(PARI_CPPFLAGS)
-EXTRA_LDFLAGS += $(PARI_LDFLAGS)
+KEXT_CFLAGS += $(PARI_CPPFLAGS)
+KEXT_LDFLAGS += $(PARI_LDFLAGS)
 EXTERN_FILES += $(PARI_FILES)
 
 ########################################################################
@@ -141,16 +42,14 @@ pariclean:
 
 else
 ifneq ($(PARI_PREFIX),)
-PARI_FILES := $(PARI_PREFIX)/lib/libpari.so
-PARI_CPPFLAGS = -I $(PARI_PREFIX)/include
-PARI_LDFLAGS = -R $(TOP)/$(PARI_PREFIX)/lib -L$(PARI_PREFIX)/lib -lpari -Wl,-rpath=$(PARI_PREFIX)/lib
+PARI_CPPFLAGS = -I$(PARI_PREFIX)/include
+PARI_LDFLAGS = -L$(PARI_PREFIX)/lib -lpari
 
-EXTRA_CPPFLAGS += $(PARI_CPPFLAGS)
-EXTRA_LDFLAGS += $(PARI_LDFLAGS)
-EXTERN_FILES += $(PARI_FILES)
+KEXT_CFLAGS += $(PARI_CPPFLAGS)
+KEXT_LDFLAGS += $(PARI_LDFLAGS)
 else
 
-EXTRA_LDFLAGS += -lpari
+KEXT_LDFLAGS += -lpari
 
 pari:
 	echo "Using system PARI, nothing to be done"
@@ -158,12 +57,5 @@ pari:
 endif
 endif
 
-$(OBJS): $(EXTERN_FILES)
-$(GAPINSTALLIB): $(EXTERN_FILES)
-
-########################################################################
-# Makefile debugging trick:
-# call print-VARIABLE to see the runtime value of any variable
-########################################################################
-print-%:
-	@echo '$*=$($*)'
+$(KEXT_OBJS): $(EXTERN_FILES)
+$(KEXT_SO): $(EXTERN_FILES)
