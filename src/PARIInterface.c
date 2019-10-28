@@ -59,7 +59,7 @@ Obj NewPARIGEN(GEN data)
     Obj o;
 
     o = NewBag(T_DATOBJ, PARI_DAT_WORDS);
-    SetTypeDatObj(o, PARI_GEN_Type);
+    SET_TYPE_OBJ(o, PARI_GEN_Type);
     SET_PARI_DAT_TYPE(o, PARI_T_GEN);
     SET_PARI_DAT_GEN(o, data);
     return o;
