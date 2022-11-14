@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/gap-packages/PARIInterface.svg?branch=master)](https://travis-ci.org/gap-packages/PARIInterface)
+[![Build Status](https://github.com/gap-packages/PARIInterface/workflows/CI/badge.svg?branch=master)](https://github.com/gap-packages/PARIInterface/actions?query=workflow%3ACI+branch%3Amaster)
 [![Code Coverage](https://codecov.io/github/gap-packages/PARIInterface/coverage.svg?branch=master&token=)](https://codecov.io/gh/gap-packages/PARIInterface)
 
 # The PARIInterface GAP package
