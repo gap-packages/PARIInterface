@@ -120,7 +120,7 @@ ifeq ($(BUILD_PARI),yes)
 PARI_PREFIX := extern/install
 PARI_FILES := $(PARI_PREFIX)/lib/libpari.*
 PARI_CPPFLAGS = -I $(PARI_PREFIX)/include
-PARI_LDFLAGS = -R $(TOP)/$(PARI_PREFIX)/lib -L$(PARI_PREFIX)/lib -lpari
+PARI_LDFLAGS = -Wl,-rpath -Wl,$(PARI_PREFIX)/lib -L$(PARI_PREFIX)/lib -lpari
 
 EXTRA_CPPFLAGS += $(PARI_CPPFLAGS)
 EXTRA_LDFLAGS += $(PARI_LDFLAGS)
@@ -143,7 +143,7 @@ else
 ifneq ($(PARI_PREFIX),)
 PARI_FILES := $(PARI_PREFIX)/lib/libpari.so
 PARI_CPPFLAGS = -I $(PARI_PREFIX)/include
-PARI_LDFLAGS = -R $(TOP)/$(PARI_PREFIX)/lib -L$(PARI_PREFIX)/lib -lpari -Wl,-rpath=$(PARI_PREFIX)/lib
+PARI_LDFLAGS = -Wl,-rpath -Wl,$(PARI_PREFIX)/lib -L$(PARI_PREFIX)/lib -lpari
 
 EXTRA_CPPFLAGS += $(PARI_CPPFLAGS)
 EXTRA_LDFLAGS += $(PARI_LDFLAGS)

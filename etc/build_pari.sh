@@ -26,7 +26,8 @@ echo "GAParch = $GAParch"
 
 PARI_VERSION=pari-2.11.0
 PARI_GIT_URL=https://pari.math.u-bordeaux.fr/git/pari.git
-PARI_DOWNLOAD_URL="https://pari.math.u-bordeaux.fr/pub/pari/unix/${PARI_VERSION}.tar.gz"
+PARI_DOWNLOAD_URL="https://pari.math.u-bordeaux.fr/pub/pari/OLD/2.11/${PARI_VERSION}.tar.gz"
+# TODO: verify checksum to ensure download is not broken?
 PARI_BUILDDIR=extern
 PARI_PREFIX="${PARI_BUILDDIR}/install"
 
