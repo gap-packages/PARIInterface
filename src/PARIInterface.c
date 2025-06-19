@@ -13,7 +13,7 @@
 #define _GNU_SOURCE     // for RTLD_DEFAULT on Linux
 
 #include <pari/pari.h>
-#include "src/compiled.h"          /* GAP headers */
+#include "gap_all.h"          /* GAP headers */
 
 #include <dlfcn.h>
 
