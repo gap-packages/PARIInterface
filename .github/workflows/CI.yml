@@ -19,7 +19,7 @@ concurrency:
 jobs:
   # The CI test job
   test:
-    name: ${{ matrix.gap-branch }} ${{ matrix.ABI }} BUILD_PARI=${{ matrix.BUILD_PARI }}
+    name: ${{ matrix.gap-branch }} BUILD_PARI=${{ matrix.BUILD_PARI }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -30,13 +30,11 @@ jobs:
           - stable-4.14
           - stable-4.13
           - stable-4.12
-        ABI: ['']
         BUILD_PARI:
           - 'yes'
           - 'no'
         include:
           - gap-branch: master
-            ABI: 32
             BUILD_PARI: 'yes'
 
     steps:
@@ -46,19 +44,13 @@ jobs:
           if [ "${{matrix.BUILD_PARI}}" = "yes" ]; then
             echo "BUILD_PARI=yes" >> $GITHUB_ENV
           else
-            if [ "${{matrix.ABI}}" = "32" ]; then
-              sudo apt-get install libpari-dev:i386
-            else
-              sudo apt-get install libpari-dev
-            fi
+            sudo apt-get install libpari-dev
           fi
       - uses: gap-actions/setup-gap@v2
         with:
           GAPBRANCH: ${{ matrix.gap-branch }}
-          ABI: ${{ matrix.ABI }}
       - uses: gap-actions/build-pkg@v1
         with:
-          ABI: ${{ matrix.ABI }}
       - uses: gap-actions/run-pkg-tests@v3
       - uses: gap-actions/run-pkg-tests@v3
         with:
