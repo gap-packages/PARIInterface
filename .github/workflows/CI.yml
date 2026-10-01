@@ -36,7 +36,7 @@ jobs:
             BUILD_PARI: 'yes'
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: 'Install additional dependencies'
         run: |
           if [ "${{matrix.BUILD_PARI}}" = "yes" ]; then
